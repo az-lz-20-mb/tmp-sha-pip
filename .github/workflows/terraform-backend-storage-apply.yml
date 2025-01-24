@@ -1,0 +1,32 @@
+name: Terraform Apply
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+
+jobs:
+  terraform:
+    name: Apply Terraform
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: '1.5.0'
+
+    - name: Terraform Init
+      working-directory: terraform/storage-account
+      run: terraform init
+
+    - name: Terraform Plan
+      working-directory: terraform/storage-account
+      run: terraform plan
+
+    - name: Terraform Apply
+      working-directory: terraform/storage-account
+      run: terraform apply -auto-approve
