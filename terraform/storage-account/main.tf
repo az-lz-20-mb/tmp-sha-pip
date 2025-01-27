@@ -19,7 +19,7 @@ resource "random_string" "resource_code" {
 
 resource "azurerm_resource_group" "tfstate" {
   name     = "tfstate-storage"
-  location = "ger-west-central"
+  location = "germanywestcentral"
 }
 
 resource "azurerm_storage_account" "tfstate" {
