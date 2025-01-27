@@ -29,10 +29,6 @@ jobs:
       working-directory: terraform/storage-account
       run: terraform init
 
-    - name: terraform Import 
-      run: |
-        terraform import
-
     - name: Terraform Plan
       working-directory: terraform/storage-account
       run: terraform plan
