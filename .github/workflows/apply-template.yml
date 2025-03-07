@@ -1,4 +1,4 @@
-name: Terraform Apply Workflow
+name: Terraform Apply
 
 on:
   workflow_call:
@@ -6,9 +6,23 @@ on:
       terraform_version:
         required: true
         type: string
-      terraform_directory:
+      module_directory:
         required: true
         type: string
+    secrets:
+      azure_client_id:
+        required: true
+        description: 'Azure Client ID for authentication'
+      azure_client_secret:
+        required: true
+        description: 'Azure Client Secret for authentication'
+      azure_tenant_id:
+        required: true
+        description: 'Azure Tenant ID for authentication'
+      azure_subscription_id:
+        required: true
+        description: 'Azure Subscription ID for identification'
+
 
 jobs:
   terraform-apply:
@@ -26,7 +40,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: terraform-plan
-          path: ${{ inputs.terraform_directory }}
+          path: ${{ inputs.module_directory }}
 
       - name: Manual Approval
         uses: hmarr/auto-approve-action@v3
@@ -35,5 +49,5 @@ jobs:
 
       - name: Terraform Apply
         run: |
-          cd ${{ inputs.terraform_directory }}
+          cd ${{ inputs.module_directory }}
           terraform apply tfplan
