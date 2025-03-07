@@ -70,8 +70,3 @@ jobs:
         with:
           name: terraform-plan
           path: ${{ inputs.terraform_directory }}/tfplan
-
-      # - name: TF Plan Output
-      #   run: |
-      #     echo "::set-output name=plan_path::${{ inputs.terraform_directory }}/tfplan"
-      #     echo "::set-output name=plan_status::Plan successfully created"
