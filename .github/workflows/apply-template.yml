@@ -40,6 +40,13 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: "${{ inputs.terraform_version }}"
+      
+      - name: Terraform Initialization
+        run: |
+          az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+          az account set --subscription $ARM_SUBSCRIPTION_ID
+          cd ${{ inputs.module_directory }}
+          terraform init -upgrade
 
       - name: Download Terraform Plan
         uses: actions/download-artifact@v4
@@ -51,4 +58,3 @@ jobs:
         run: |
           cd ${{ inputs.module_directory }}
           terraform apply tfplan
-          
