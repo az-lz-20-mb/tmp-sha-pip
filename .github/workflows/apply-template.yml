@@ -47,12 +47,6 @@ jobs:
           name: terraform-plan
           path: ${{ inputs.module_directory }}
 
-      - name: Manual Approval
-        if: github.ref == 'refs/heads/main'
-        uses: hmarr/auto-approve-action@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Terraform Apply
         run: |
           cd ${{ inputs.module_directory }}

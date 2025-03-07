@@ -51,11 +51,6 @@ jobs:
           name: terraform-destroy-plan
           path: ${{ inputs.terraform_directory }}/destroy.tfplan
 
-      - name: Manual Approval for Destroy Execution
-        uses: hmarr/auto-approve-action@v3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Terraform Destroy
         run: |
           cd ${{ inputs.terraform_directory }}
