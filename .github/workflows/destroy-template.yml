@@ -23,7 +23,6 @@ on:
         required: true
         description: 'Azure Subscription ID for identification'
 
-        
 jobs:
   terraform-destroy:
     runs-on: ubuntu-latest
@@ -54,6 +53,11 @@ jobs:
         run: |
           cd ${{ inputs.module_directory }}
           terraform validate
+
+      - name: List Terraform State
+        run: |
+          cd ${{ inputs.module_directory }}
+          terraform state list || echo "No state found, proceeding with destroy"
 
       - name: Terraform Destroy Plan
         run: |
