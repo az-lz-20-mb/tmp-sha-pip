@@ -9,6 +9,20 @@ on:
       terraform_directory:
         required: true
         type: string
+    secrets:
+      azure_client_id:
+        required: true
+        description: 'Azure Client ID for authentication'
+      azure_client_secret:
+        required: true
+        description: 'Azure Client Secret for authentication'
+      azure_tenant_id:
+        required: true
+        description: 'Azure Tenant ID for authentication'
+      azure_subscription_id:
+        required: true
+        description: 'Azure Subscription ID for identification'
+
 
 jobs:
   terraform-plan:
