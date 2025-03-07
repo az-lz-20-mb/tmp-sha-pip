@@ -24,9 +24,9 @@ on:
         description: 'Azure Subscription ID for identification'
 
 jobs:
-  terraform-destroy:
+  terraform-destroy-plan:
     runs-on: ubuntu-latest
-    # Define environment variables at the job level
+    environment: terraform-destroy-approval-1  # First approval required
     env:
       ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
       ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
@@ -58,6 +58,24 @@ jobs:
         run: |
           cd ${{ inputs.module_directory }}
           terraform state list || echo "No state found, proceeding with destroy"
+
+  terraform-destroy-apply:
+    needs: terraform-destroy-plan
+    runs-on: ubuntu-latest
+    environment: terraform-destroy-approval-2  # Second approval required
+    env:
+      ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+      ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
+      ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "${{ inputs.terraform_version }}"
 
       - name: Terraform Destroy Plan
         run: |
