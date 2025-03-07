@@ -23,10 +23,15 @@ on:
         required: true
         description: 'Azure Subscription ID for identification'
 
-
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
+    # Define environment variables at the job level
+    env:
+      ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+      ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
+      ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -43,6 +48,7 @@ jobs:
           path: ${{ inputs.module_directory }}
 
       - name: Manual Approval
+        if: github.ref == 'refs/heads/main'
         uses: hmarr/auto-approve-action@v3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
