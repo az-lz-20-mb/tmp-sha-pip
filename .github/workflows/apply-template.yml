@@ -51,3 +51,4 @@ jobs:
         run: |
           cd ${{ inputs.module_directory }}
           terraform apply tfplan
+          
