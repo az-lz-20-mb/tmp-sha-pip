@@ -128,12 +128,12 @@ jobs:
           name: terraform-destroy-plan
           path: ${{ inputs.module_directory }}
 
-      - name: Terraform Apply Destroy Plan
+      - name: Terraform Destroy Plan
         run: |
           cd ${{ inputs.module_directory }}
           terraform apply destroy.tfplan
 
-      - name: Terraform Destroy Final Step
+      - name: Terraform Destroy
         run: |
           cd ${{ inputs.module_directory }}
           terraform destroy -auto-approve

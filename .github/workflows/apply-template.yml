@@ -29,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     environment: terraform-apply  # Requires manual approval in GitHub
-    # Define environment variables at the job level
     env:
       ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
       ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
