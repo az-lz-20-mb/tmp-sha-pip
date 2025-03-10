@@ -1,4 +1,4 @@
-name: Terraform Plan Workflow
+name: Terraform Plan
 
 on:
   workflow_call:

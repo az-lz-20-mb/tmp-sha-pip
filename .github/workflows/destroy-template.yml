@@ -1,4 +1,4 @@
-name: Terraform Destroy Workflow
+name: Terraform Destroy
 
 on:
   workflow_call:
@@ -25,6 +25,7 @@ on:
 
 jobs:
   terraform-destroy-list:
+    name: 'Terraform Destroy List State' 
     runs-on: ubuntu-latest
     env:
       ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
@@ -60,6 +61,7 @@ jobs:
 
   terraform-destroy-plan:
     needs: terraform-destroy-list
+    name: 'Terraform Destroy Plan'
     runs-on: ubuntu-latest
     environment: terraform-destroy-approval-1  # Second approval required
     env:
@@ -96,6 +98,7 @@ jobs:
 
   terraform-destroy-apply:
     needs: terraform-destroy-plan
+    name: 'Terraform Destroy Apply' 
     runs-on: ubuntu-latest
     environment: terraform-destroy-approval-2  # Final approval before destroy
     env:
