@@ -1,0 +1,66 @@
+name: Terraform Plan
+
+on:
+  workflow_call:
+    inputs:
+      terraform_version:
+        required: true
+        type: string
+      module_directory:
+        required: true
+        type: string
+    secrets:
+      azure_client_id:
+        required: true
+        description: 'Azure Client ID for authentication'
+      azure_client_secret:
+        required: true
+        description: 'Azure Client Secret for authentication'
+      azure_tenant_id:
+        required: true
+        description: 'Azure Tenant ID for authentication'
+      azure_subscription_id:
+        required: true
+        description: 'Azure Subscription ID for identification'
+
+jobs:
+  terraform-plan:
+    name: 'Terraform Plan'
+    runs-on: ubuntu-latest
+    # Define environment variables here, at the job level
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "${{ inputs.terraform_version }}"
+
+      - name: Terraform Initialization
+        run: |
+          az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+          az account set --subscription $ARM_SUBSCRIPTION_ID
+          cd ${{ inputs.module_directory }}
+          terraform init -upgrade
+
+      - name: Terraform Validate
+        run: |
+          cd ${{ inputs.module_directory }}
+          terraform validate
+
+      - name: Terraform Plan
+        run: |
+          cd ${{ inputs.module_directory }}
+          terraform plan -out=tfplan
+
+      - name: Save Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: ${{ inputs.module_directory }}/tfplan
