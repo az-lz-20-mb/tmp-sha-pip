@@ -86,5 +86,4 @@ jobs:
       - name: Terraform State Unlock (Automated)
         run: |
           cd ${{ inputs.module_directory }}
-          printf "yes\n" | terraform force-unlock -input=false ${{ inputs.lock_id }}
-  
+          terraform force-unlock -force ${{ inputs.lock_id }}
