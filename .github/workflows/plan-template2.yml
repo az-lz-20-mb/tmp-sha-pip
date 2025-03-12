@@ -59,9 +59,11 @@ jobs:
         run: |
             cd ${{ inputs.module_directory }}
             terraform plan -out=tfplan
-            echo "Sleeping for 5 minutes to keep the lock..."
-            sleep 300  # 300 sekund = 5 minut
-  
+
+      - name: Fake Lock (Hold the process)
+        run: |
+          echo "Creating a fake lock process to keep state locked..."
+          sleep 900  # 15 minut blokady     
 
       - name: Save Plan Artifact
         uses: actions/upload-artifact@v4
