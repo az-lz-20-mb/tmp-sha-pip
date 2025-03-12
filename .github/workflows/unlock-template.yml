@@ -83,7 +83,7 @@ jobs:
           cd ${{ inputs.module_directory }}
           terraform init -upgrade
 
-      - name: Terraform State Unlock
+      - name: Terraform State Unlock (Automated)
         run: |
           cd ${{ inputs.module_directory }}
-          terraform force-unlock ${{ inputs.lock_id }}
+          echo "yes" | terraform force-unlock ${{ inputs.lock_id }}
