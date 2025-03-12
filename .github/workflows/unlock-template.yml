@@ -1,0 +1,89 @@
+name: Terraform State Management
+
+on:
+  workflow_call:
+    inputs:
+      terraform_version:
+        required: true
+        type: string
+      module_directory:
+        required: true
+        type: string
+      lock_id:
+        required: true
+        type: string
+        description: 'The Terraform state lock ID to unlock'
+    secrets:
+      azure_client_id:
+        required: true
+        description: 'Azure Client ID for authentication'
+      azure_client_secret:
+        required: true
+        description: 'Azure Client Secret for authentication'
+      azure_tenant_id:
+        required: true
+        description: 'Azure Tenant ID for authentication'
+      azure_subscription_id:
+        required: true
+        description: 'Azure Subscription ID for identification'
+
+jobs:
+  terraform-state-list:
+    name: 'List Terraform State'
+    runs-on: ubuntu-latest
+    env:
+      ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+      ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
+      ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "${{ inputs.terraform_version }}"
+
+      - name: Terraform Initialization
+        run: |
+          az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+          az account set --subscription $ARM_SUBSCRIPTION_ID
+          cd ${{ inputs.module_directory }}
+          terraform init -upgrade
+
+      - name: Terraform State List
+        run: |
+          cd ${{ inputs.module_directory }}
+          terraform state list
+
+  terraform-state-unlock:
+    needs: terraform-state-list
+    name: 'Unlock Terraform State'
+    runs-on: ubuntu-latest
+    environment: approval-unlock  # Requires manual approval in GitHub
+    env:
+      ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
+      ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
+      ARM_TENANT_ID: ${{ secrets.azure_tenant_id }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.azure_subscription_id }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "${{ inputs.terraform_version }}"
+
+      - name: Terraform Initialization
+        run: |
+          az login --service-principal --username $ARM_CLIENT_ID --password $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID
+          az account set --subscription $ARM_SUBSCRIPTION_ID
+          cd ${{ inputs.module_directory }}
+          terraform init -upgrade
+
+      - name: Terraform State Unlock
+        run: |
+          cd ${{ inputs.module_directory }}
+          terraform force-unlock ${{ inputs.lock_id }}
