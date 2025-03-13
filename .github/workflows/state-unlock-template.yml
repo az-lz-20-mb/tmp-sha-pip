@@ -1,4 +1,4 @@
-name: Terraform Unlock
+name: Terraform State Unlock Template
 
 on:
   workflow_call:

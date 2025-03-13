@@ -1,4 +1,4 @@
-name: Terraform Plan
+name: Terraform Plan Template
 
 on:
   workflow_call:
@@ -27,7 +27,6 @@ jobs:
   terraform-plan:
     name: 'Terraform Plan'
     runs-on: ubuntu-latest
-    # Define environment variables here, at the job level
     env:
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

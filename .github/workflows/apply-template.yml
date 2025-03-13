@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Terraform Apply Template
 
 on:
   workflow_call:
@@ -28,7 +28,7 @@ jobs:
     name: 'Terraform Apply'
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    environment: terraform-apply  # Requires manual approval in GitHub
+    environment: terraform-apply
     env:
       ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
       ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
