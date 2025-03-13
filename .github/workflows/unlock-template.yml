@@ -61,7 +61,7 @@ jobs:
     needs: terraform-state-list
     name: 'Unlock Terraform State'
     runs-on: ubuntu-latest
-    environment: approval-unlock  # Requires manual approval in GitHub
+    environment: approval-unlock  
     env:
       ARM_CLIENT_ID: ${{ secrets.azure_client_id }}
       ARM_CLIENT_SECRET: ${{ secrets.azure_client_secret }}
@@ -83,7 +83,7 @@ jobs:
           cd ${{ inputs.module_directory }}
           terraform init -upgrade
 
-      - name: Terraform State Unlock (Automated)
+      - name: Terraform State Unlock
         run: |
           cd ${{ inputs.module_directory }}
           terraform force-unlock -force ${{ inputs.lock_id }}
